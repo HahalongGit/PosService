@@ -34,10 +34,18 @@ public class PosPrinterService extends Service {
 
     private String posInfo = "我是Service--pos机器，我的型号是XZ20191120";
 
+    /**
+     * 设备功AIDL管理Binder（对其他Binder分发）
+     */
+    private AidlDeviceManagerImpl mAidlDeviceManager = new AidlDeviceManagerImpl();
+    /**
+     * 打印模块Binder
+     */
     private PosPrinterBinder mPosPrinterBinder = new PosPrinterBinder();
 
-    private AidlDeviceManagerImpl mAidlDeviceManager = new AidlDeviceManagerImpl();
-
+    /**
+     * pos扫码功能Binder
+     */
     private PosScannQRBinder mPosScannQRBinder = new PosScannQRBinder();
 
     @Override
@@ -65,7 +73,6 @@ public class PosPrinterService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.e(TAG, "onBind-currentThread: " + Thread.currentThread().getName());
-//        return mPosPrinterBinder;
         return mAidlDeviceManager;
     }
 
@@ -76,6 +83,7 @@ public class PosPrinterService extends Service {
 
         @Override
         public IBinder getDevice(int deviceType) throws RemoteException {
+            // 根据参数分发 Binder
             if (deviceType == Constant.DEVICE_TYPE.DEVICE_TYPE_PRINTERDEV) {
                 return mPosPrinterBinder;
             } else if (deviceType == Constant.DEVICE_TYPE.DEVICE_TYPE_QUICKSCAN) {
@@ -91,6 +99,7 @@ public class PosPrinterService extends Service {
 
         @Override
         public String getVersion() throws RemoteException {
+
             return null;
         }
     }
