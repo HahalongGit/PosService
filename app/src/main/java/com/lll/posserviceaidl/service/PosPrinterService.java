@@ -121,6 +121,8 @@ public class PosPrinterService extends Service {
 
         @Override
         public DecodeResult decodeBarCode(int width, int height, byte[] data) throws RemoteException {
+            Log.e(TAG, "decodeBarCode-thread: " + Thread.currentThread().getName());
+            Log.e(TAG, "decodeBarCode: " + width + "--" + height);
             return null;
         }
     }
