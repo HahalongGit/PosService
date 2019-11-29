@@ -10,14 +10,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.lll.posserviceaidl.AidlDeviceManager;
+import com.lll.posserviceaidl.AidlScanCallback;
 import com.lll.posserviceaidl.IPosQuickScanManager;
 import com.lll.posserviceaidl.PosPrinterCallback;
 import com.lll.posserviceaidl.PsoPrinterManager;
+import com.lll.posserviceaidl.bean.CameraBeanZbar;
 import com.lll.posserviceaidl.bean.DecodeResult;
 import com.lll.posserviceaidl.bean.PosInfo;
 import com.lll.posserviceaidl.bean.PrinterParams;
 import com.lll.posserviceaidl.constant.Constant;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -110,6 +113,12 @@ public class PosPrinterService extends Service {
     private class PosScannQRBinder extends IPosQuickScanManager.Stub {
 
         @Override
+        public int init(String packageName) throws RemoteException {
+            //初始化扫码功能 返回状态
+            return 0;
+        }
+
+        @Override
         public void cancelQRscan() throws RemoteException {
 
         }
@@ -124,6 +133,26 @@ public class PosPrinterService extends Service {
             Log.e(TAG, "decodeBarCode-thread: " + Thread.currentThread().getName());
             Log.e(TAG, "decodeBarCode: " + width + "--" + height);
             return null;
+        }
+
+        @Override
+        public void scanQrCode(CameraBeanZbar cameraBeanZbar, AidlScanCallback cb) throws RemoteException {
+            Log.e(TAG, "scanQrCode-Thread: " + Thread.currentThread().getName());
+            if (cameraBeanZbar != null) {
+                Log.e(TAG, "scanQrCode-CameraId: " + cameraBeanZbar.getCameraId());
+                Log.e(TAG, "scanQrCode-Height: " + cameraBeanZbar.getHeight());
+                Log.e(TAG, "scanQrCode-LightMode: " + cameraBeanZbar.getLightMode());
+                Log.e(TAG, "scanQrCode-Time: " + cameraBeanZbar.getTime());
+                Log.e(TAG, "scanQrCode-SpinDegree: " + cameraBeanZbar.getSpinDegree());
+                HashMap<String, Object> externalMap = cameraBeanZbar.getExternalMap();
+                boolean scanEffect = (boolean) externalMap.get("ScanEffect");
+                boolean showPreview = (boolean) externalMap.get("ShowPreview");
+                Log.e(TAG, "scanQrCode-scanEffect: " + scanEffect);
+                Log.e(TAG, "scanQrCode-showPreview: " + showPreview);
+                if (cb != null) {
+                    cb.onCaptured("12423", 23144);
+                }
+            }
         }
     }
 
